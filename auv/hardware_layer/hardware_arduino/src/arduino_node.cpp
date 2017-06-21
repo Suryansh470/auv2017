@@ -61,7 +61,7 @@ int NormalizeUpwardPWM(int pwm)
   return pwm * 73 / 255 + 147;
 }
 
-/*int btd092(int pwm)
+int btd092(int pwm)
 {
   pwm = NormalizePWM(pwm);
   if (pwm <= 147)
@@ -70,7 +70,7 @@ int NormalizeUpwardPWM(int pwm)
   }
   pwm = (c099 + s099 * pwm - c092) / (s092);
   return pwm;
-}*/
+}
 
 int btd093(int pwm)
 {
@@ -83,7 +83,7 @@ int btd093(int pwm)
   return pwm;
 }
 
-/*int btd099(int pwm)
+int btd099(int pwm)
 {
   pwm = NormalizePWM(pwm);
   if (pwm <= 147)
@@ -91,7 +91,7 @@ int btd093(int pwm)
     return 0;
   }
   return pwm;
-}*/
+}
 
 int btd113(int pwm)
 {
@@ -143,66 +143,10 @@ void thrusterNorthUp(int pwm, int isUpward)
   }
 }
 
-void thrusterNorthUpCb(const std_msgs::Int32& msg)
-{
-  bool isUpward=true;
-  if(msg.data<=0)
-  {
-    isUpward=false;
-  }
-
-  int pwm = abs(msg.data);
-  pwm=NormalizeUpwardPWM(pwm);
-  if(pwm<=147)
-    {
-      pwm=0;
-    }
-
-  analogWrite(pwmPinNorthUp, 255 - pwm);
-  if (isUpward)
-  {
-    digitalWrite(directionPinNorthUp1, HIGH);
-    digitalWrite(directionPinNorthUp2, LOW);
-  }
-  else
-  {
-    digitalWrite(directionPinNorthUp1, LOW);
-    digitalWrite(directionPinNorthUp2, HIGH);
-  }
-}
-
 void thrusterSouthUp(int pwm, int isUpward)
 {
   pwm = abs(pwm);
   pwm = btd093(pwm);
-  analogWrite(pwmPinSouthUp, 255 - pwm);
-  if (isUpward)
-  {
-    digitalWrite(directionPinSouthUp1, HIGH);
-    digitalWrite(directionPinSouthUp2, LOW);
-  }
-  else
-  {
-    digitalWrite(directionPinSouthUp1, LOW);
-    digitalWrite(directionPinSouthUp2, HIGH);
-  }
-}
-
-void thrusterSouthUpCb(const std_msgs::Int32& msg)
-{
-  bool isUpward=true;
-  if(msg.data<=0)
-  {
-    isUpward=false;
-  }
-
-  int pwm = abs(msg.data);
-  pwm=NormalizeUpwardPWM(pwm);
-  if(pwm<=147)
-    {
-      pwm=0;
-    }
-
   analogWrite(pwmPinSouthUp, 255 - pwm);
   if (isUpward)
   {
@@ -233,30 +177,6 @@ void thrusterNorthSway(int pwm, int isRight)
   }
 }
 
-void thrusterNorthSwayCb(const std_msgs::Int32& msg)
-{
-  bool isRight=true;
-  if(msg.data<=0)
-      isRight=false;
-  int pwm = abs(msg.data);
-  pwm = NormalizePWM(pwm);
-  if(pwm<=147)
-  {
-    pwm=0;
-  }
-  analogWrite(pwmPinNorthSway, 255 - pwm);
-  if (isRight)
-  {
-    digitalWrite(directionPinNorthSway1, HIGH);
-    digitalWrite(directionPinNorthSway2, LOW);
-  }
-  else
-  {
-    digitalWrite(directionPinNorthSway1, LOW);
-    digitalWrite(directionPinNorthSway2, HIGH);
-  }
-}
-
 void thrusterSouthSway(int pwm, int isRight)
 {
   pwm = abs(pwm);
@@ -274,71 +194,10 @@ void thrusterSouthSway(int pwm, int isRight)
   }
 }
 
-void thrusterSouthSwayCb(const std_msgs::Int32& msg)
+void thrusterEast(int pwm, int isForward)
 {
-  bool isRight=true;
-  if(msg.data<=0)
-  {
-    isRight=false;
-  }
-  int pwm = abs(msg.data);
-  pwm = NormalizePWM(pwm);
-  if(pwm<=147)
-  {
-    pwm=0;
-  }
-  analogWrite(pwmPinSouthSway, 255 - pwm);
-  if (isRight)
-  {
-    digitalWrite(directionPinSouthSway1, HIGH);
-    digitalWrite(directionPinSouthSway2, LOW);
-  }
-  else
-  {
-    digitalWrite(directionPinSouthSway1, LOW);
-    digitalWrite(directionPinSouthSway2, HIGH);
-  }
-}
-
-void thrusterWestCb(const std_msgs::Int32& msg)
-{
-  bool isForward=true;
-  if(msg.data<=0)
-  {
-    isForward=false;
-  }
-  int pwm = abs(msg.data);
-  pwm = NormalizePWM(pwm);
-  if (pwm <= 147)
-  {
-    pwm=0;
-  }
-  analogWrite(pwmPinWest, 255 - pwm);
-  if (isForward)
-  {
-    digitalWrite(directionPinWest1, HIGH);
-    digitalWrite(directionPinWest2, LOW);
-  }
-  else
-  {
-    digitalWrite(directionPinWest1, LOW);
-    digitalWrite(directionPinWest2, HIGH);
-  }
-}
-
-void thrusterEastCb(const std_msgs::Int32& msg)
-{
-  bool isForward=true;
-  if(msg.data<=0)
-  {
-    isForward=false;
-  }
-  int pwm = abs(msg.data);
-  pwm = NormalizePWM(pwm);
-  if (pwm <= 147)
-  {
-    pwm=0;
-  }
+  pwm = abs(pwm);
+  pwm = btd092(pwm);
   analogWrite(pwmPinEast, 255 - pwm);
   if (isForward)
   {
@@ -352,7 +211,24 @@ void thrusterEastCb(const std_msgs::Int32& msg)
   }
 }
 
-/*void PWMCbForward(const std_msgs::Int32& msg)
+void thrusterWest(int pwm, int isForward)
+{
+  pwm = abs(pwm);
+  pwm = btd099(pwm);
+  analogWrite(pwmPinWest, 255 - pwm);
+  if (isForward)
+  {
+    digitalWrite(directionPinWest1, HIGH);
+    digitalWrite(directionPinWest2, LOW);
+  }
+  else
+  {
+    digitalWrite(directionPinWest1, LOW);
+    digitalWrite(directionPinWest2, HIGH);
+  }
+}
+
+void PWMCbForward(const std_msgs::Int32& msg)
 {
   if (msg.data > 0)
   {
@@ -365,7 +241,7 @@ void thrusterEastCb(const std_msgs::Int32& msg)
     thrusterWest(msg.data, false);
   }
   isMovingForward = true;
-}*/
+}
 
 void PWMCbSideward(const std_msgs::Int32& msg)
 {
@@ -379,8 +255,7 @@ void PWMCbSideward(const std_msgs::Int32& msg)
     thrusterNorthSway(msg.data, false);
     thrusterSouthSway(msg.data, false);
   }
-  
-  //isMovingForward = false;
+  isMovingForward = false;
 }
 
 void PWMCbUpward(const std_msgs::Int32& msg)
@@ -401,7 +276,7 @@ void PWMCbUpward(const std_msgs::Int32& msg)
 
 void PWMCbTurn(const std_msgs::Int32& msg)
 {
-  /*if (!isMovingForward)
+  if (!isMovingForward)
   {
     if (msg.data > 0)
     {
@@ -415,27 +290,21 @@ void PWMCbTurn(const std_msgs::Int32& msg)
     }
   }
   else
-  {*/
-  if (msg.data > 0)
   {
-    thrusterNorthSway(msg.data, false);
-    thrusterSouthSway(msg.data, true);
+    if (msg.data > 0)
+    {
+      thrusterNorthSway(msg.data, false);
+      thrusterSouthSway(msg.data, true);
+    }
+    else
+    {
+      thrusterNorthSway(msg.data, true);
+      thrusterSouthSway(msg.data, false);
+    }
   }
-  else
-  {
-    thrusterNorthSway(msg.data, true);
-    thrusterSouthSway(msg.data, false);
-  }
-  //}
 }
 
-//ros::Subscriber<std_msgs::Int32> subPwmForward("/pwm/forward", &PWMCbForward);
-ros::Subscriber<std_msgs::Int32> theast("/pwm/teast", &thrusterEastCb);
-ros::Subscriber<std_msgs::Int32> thwest("/pwm/twest", &thrusterWestCb);
-ros::Subscriber<std_msgs::Int32> thnorthsway("/pwm/tnorthsway", &thrusterNorthSwayCb);
-ros::Subscriber<std_msgs::Int32> thsouthsway("/pwm/tsouthsway", &thrusterSouthSwayCb);
-ros::Subscriber<std_msgs::Int32> thnorthup("/pwm/tnorthup", &thrusterNorthUpCb);
-ros::Subscriber<std_msgs::Int32> thsouthup("/pwm/tsouthup", &thrusterSouthUpCb);
+ros::Subscriber<std_msgs::Int32> subPwmForward("/pwm/forward", &PWMCbForward);
 ros::Subscriber<std_msgs::Int32> subPwmSideward("/pwm/sideward", &PWMCbSideward);
 ros::Subscriber<std_msgs::Int32> subPwmUpward("/pwm/upward", &PWMCbUpward);
 ros::Subscriber<std_msgs::Int32> subPwmTurn("/pwm/turn", &PWMCbTurn);
@@ -470,27 +339,15 @@ void setup()
   pinMode(pwmPinSouthUp, OUTPUT);
   pinMode(directionPinNorthUp1, OUTPUT);
 
-  //nh.subscribe(subPwmForward);
-  nh.subscribe(theast);
-  nh.subscribe(thwest);
+  nh.subscribe(subPwmForward);
   nh.subscribe(subPwmSideward);
-  nh.subscribe(thnorthup);
-  nh.subscribe(thsouthup);
-  nh.subscribe(thnorthsway);
-  nh.subscribe(thsouthsway);
   nh.subscribe(subPwmUpward);
   nh.subscribe(subPwmTurn);
   nh.advertise(ps_voltage);
   Serial.begin(57600);
   std_msgs::Int32 msg;
   msg.data = 0;
-  //PWMCbForward(msg);
-  thrusterEastCb(msg);
-  thrusterWestCb(msg);
-  thrusterNorthUpCb(msg);
-  thrusterSouthUpCb(msg);
-  thrusterSouthSwayCb(msg);
-  thrusterNorthSwayCb(msg);
+  PWMCbForward(msg);
   PWMCbSideward(msg);
   PWMCbUpward(msg);
   PWMCbTurn(msg);
@@ -514,4 +371,3 @@ void loop()
   delay(200);
   nh.spinOnce();
 }
-
